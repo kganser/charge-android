@@ -22,18 +22,19 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:background="#ddffffff">
+                <View
+                    android:id="@+id/border"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#55000000" />
                 <ScrollView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_below="@+id/border"
                     android:layout_above="@+id/ad">
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
-                        <View
-                            android:id="@+id/border"
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:background="#55000000" />
                         <TextView
                             style="@style/FieldValue"
                             android:id="@+id/address"
@@ -54,7 +55,6 @@
                             style="@style/Button"
                             android:id="@+id/directions"
                             android:layout_toLeftOf="@+id/favorite"
-                            android:layout_below="@+id/border"
                             android:src="@drawable/ic_action_directions"
                             android:contentDescription="@string/directions"
                             android:onClick="getDirections" />
@@ -62,7 +62,6 @@
                             style="@style/Button"
                             android:id="@+id/favorite"
                             android:layout_alignParentRight="true"
-                            android:layout_below="@+id/border"
                             android:contentDescription="@string/favorite"
                             android:onClick="toggleFavorite" />
                         <TextView

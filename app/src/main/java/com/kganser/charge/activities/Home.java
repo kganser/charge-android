@@ -575,7 +575,9 @@ public class Home extends ActionBarActivity implements LocationListener {
                 if (stations.containsKey(station.id))
                     return true;
                 for (Station s : stations.values()) {
-                    if (SphericalUtil.computeDistanceBetween(s.position, station.position) < 100) {
+                    double distance = SphericalUtil.computeDistanceBetween(s.position, station.position);
+                    //System.err.println(distance+"m between\n  "+s.address+"\n  "+station.address);
+                    if (distance < 100 || distance < 200 && s.address.equals(station.address)) {
                         stations.put(station.id, station);
                         level1Avail += station.level1Avail;
                         level1Total += station.level1Total;
