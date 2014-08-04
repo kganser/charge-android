@@ -1,0 +1,171 @@
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:id="@+id/detail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:onClick="hideDetail" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="#ddffffff">
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_above="@+id/ad">
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <View
+                            android:id="@+id/border"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="#55000000" />
+                        <TextView
+                            style="@style/FieldValue"
+                            android:id="@+id/address"
+                            android:layout_alignParentLeft="true"
+                            android:layout_toLeftOf="@+id/directions"
+                            android:paddingTop="8dp"
+                            android:paddingBottom="0dp"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+                        <TextView
+                            style="@style/FieldValue"
+                            android:id="@+id/network"
+                            android:layout_below="@+id/address"
+                            android:paddingTop="0dp"
+                            android:textSize="13sp"
+                            android:textColor="@color/gray_60" />
+                        <ImageButton
+                            style="@style/Button"
+                            android:id="@+id/directions"
+                            android:layout_toLeftOf="@+id/favorite"
+                            android:layout_below="@+id/border"
+                            android:src="@drawable/ic_action_directions"
+                            android:contentDescription="@string/directions"
+                            android:onClick="getDirections" />
+                        <ImageButton
+                            style="@style/Button"
+                            android:id="@+id/favorite"
+                            android:layout_alignParentRight="true"
+                            android:layout_below="@+id/border"
+                            android:contentDescription="@string/favorite"
+                            android:onClick="toggleFavorite" />
+                        <TextView
+                            style="@style/FieldLabel"
+                            android:id="@+id/level_1_label"
+                            android:layout_below="@+id/network"
+                            android:text="@string/level_1" />
+                        <TextView
+                            style="@style/FieldValue"
+                            android:id="@+id/level_1"
+                            android:layout_below="@+id/network"
+                            android:layout_toRightOf="@+id/level_1_label" />
+                        <TextView
+                            style="@style/FieldLabel"
+                            android:id="@+id/level_2_label"
+                            android:layout_below="@+id/level_1_label"
+                            android:text="@string/level_2" />
+                        <TextView
+                            style="@style/FieldValue"
+                            android:id="@+id/level_2"
+                            android:layout_below="@+id/level_1_label"
+                            android:layout_toRightOf="@+id/level_2_label" />
+                        <TextView
+                            style="@style/FieldLabel"
+                            android:id="@+id/level_3_label"
+                            android:layout_below="@+id/level_2_label"
+                            android:layout_marginBottom="10dp"
+                            android:text="@string/level_3" />
+                        <TextView
+                            style="@style/FieldValue"
+                            android:id="@+id/level_3"
+                            android:layout_below="@+id/level_2_label"
+                            android:layout_toRightOf="@+id/level_2_label" />
+                        <!--fragment
+                            android:id="@+id/street_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_alignParentBottom="true"
+                            android:layout_below="@+id/level_3_label"
+                            android:name="com.google.android.gms.maps.SupportStreetViewPanoramaFragment" /-->
+                    </RelativeLayout>
+                </ScrollView>
+                <com.google.android.gms.ads.AdView
+                    android:id="@+id/ad"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    ads:adUnitId="ca-app-pub-8622334174094028/1697202485"
+                    ads:adSize="BANNER" />
+            </RelativeLayout>
+        </LinearLayout>
+        <fragment
+            android:id="@+id/map"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:name="com.kganser.charge.activities.Home$MapFragment" />
+    </FrameLayout>
+    <ScrollView
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="left"
+        android:background="#111">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:clickable="true">
+            <TextView
+                style="@style/DrawerItem"
+                android:text="@string/networks" />
+            <View style="@style/DrawerDivider" />
+            <CheckedTextView
+                style="@style/DrawerOption"
+                android:id="@+id/option_chargepoint"
+                android:text="@string/chargepoint" />
+            <CheckedTextView
+                style="@style/DrawerOption"
+                android:id="@+id/option_blink"
+                android:text="@string/blink" />
+            <TextView
+                style="@style/DrawerItem"
+                android:text="@string/charging_stations" />
+            <View style="@style/DrawerDivider" />
+            <CheckedTextView
+                style="@style/DrawerOption"
+                android:id="@+id/option_level_1"
+                android:text="@string/level_1" />
+            <CheckedTextView
+                style="@style/DrawerOption"
+                android:id="@+id/option_level_2"
+                android:text="@string/level_2" />
+            <CheckedTextView
+                style="@style/DrawerOption"
+                android:id="@+id/option_level_3"
+                android:text="@string/level_3" />
+            <CheckedTextView
+                style="@style/DrawerOption"
+                android:id="@+id/option_unavailable"
+                android:text="@string/unavailable" />
+            <CheckedTextView
+                style="@style/DrawerOption"
+                android:id="@+id/option_favorites"
+                android:text="@string/favorites" />
+        </LinearLayout>
+    </ScrollView>
+</android.support.v4.widget.DrawerLayout>

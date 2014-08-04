@@ -1,0 +1,9 @@
+<resources>
+    <color name="white">#fff</color>
+    <color name="black">#000</color>
+    <color name="gray_60">#999</color>
+    <color name="gray_80">#ccc</color>
+    <color name="green">#0c0</color>
+    <color name="yellow">#cc0</color>
+    <color name="red">#c00</color>
+</resources>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:charge="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/settings"
+          android:title="@string/settings"
+          android:icon="@drawable/ic_action_settings"
+          android:showAsAction="ifRoom"
+          charge:showAsAction="ifRoom" />
+    <!--item android:id="@+id/about"
+          android:title="@string/about"
+          android:showAsAction="never"
+          charge:showAsAction="ifRoom" /-->
+</menu>
