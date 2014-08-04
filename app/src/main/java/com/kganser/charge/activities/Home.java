@@ -61,7 +61,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -222,7 +222,6 @@ public class Home extends ActionBarActivity implements LocationListener {
                     Station.Status status = getStationStatus(s);
                     Marker marker = markers.get(s.id);
                     boolean open = marker.isInfoWindowShown();
-                    // TODO: diff first to prevent flicker
                     marker.setIcon(Station.getIcon(status));
                     marker.setVisible(Home.this.marker == null ? status != Station.Status.HIDDEN : Home.this.marker.equals(marker));
                     if (open) marker.showInfoWindow();
@@ -298,8 +297,7 @@ public class Home extends ActionBarActivity implements LocationListener {
             }
         }
 
-        for (String id : prefs.getString("favorites", "").split(" "))
-            favorites.add(id);
+        Collections.addAll(favorites, prefs.getString("favorites", "").split(" "));
 
         ((Checkable) findViewById(R.id.option_chargepoint)).setChecked(settings.getBoolean("option_chargepoint"));
         ((Checkable) findViewById(R.id.option_blink)).setChecked(settings.getBoolean("option_blink"));
@@ -377,7 +375,7 @@ public class Home extends ActionBarActivity implements LocationListener {
                 level1.setText(status(station.level1Avail, station.level1Total));
                 level2.setText(status(station.level2Avail, station.level2Total));
                 level3.setText(status(station.level3Avail, station.level3Total));
-                favorite.setImageResource(favorites.contains(station.id) ? R.drawable.ic_action_important : R.drawable.ic_action_not_important);
+                favorite.setImageResource(station.containsAny(favorites) ? R.drawable.ic_action_important : R.drawable.ic_action_not_important);
                 ad.loadAd(new AdRequest.Builder()
                     .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
                     .setLocation(provider == null ? null : locationManager.getLastKnownLocation(provider))
@@ -491,15 +489,17 @@ public class Home extends ActionBarActivity implements LocationListener {
 
     public void toggleFavorite(View v) {
         if (marker != null) {
-            String id = stations.get(marker).id,
-                text = "Added to favorites";
+            StationGroup group = stations.get(marker);
+            String text = "Added to favorites";
             int image = R.drawable.ic_action_important;
-            if (favorites.contains(id)) {
-                favorites.remove(id);
+            if (group.containsAny(favorites)) {
+                for (String id : group.stations.keySet())
+                    favorites.remove(id);
                 image = R.drawable.ic_action_not_important;
                 text = "Removed from favorites";
             } else {
-                favorites.add(id);
+                for (String id : group.stations.keySet())
+                    favorites.add(id);
             }
             favorite.setImageResource(image);
             Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
@@ -516,9 +516,11 @@ public class Home extends ActionBarActivity implements LocationListener {
     private void updateMarkers() {
         for (String key : markers.keySet()) {
             Marker m = markers.get(key);
+            boolean open = m.isInfoWindowShown();
             Station.Status status = getStationStatus(stations.get(m));
             m.setIcon(Station.getIcon(status));
             m.setVisible(Home.this.marker == null ? status != Station.Status.HIDDEN : Home.this.marker.equals(m));
+            if (open) m.showInfoWindow();
         }
     }
 
@@ -563,19 +565,18 @@ public class Home extends ActionBarActivity implements LocationListener {
     public void onStatusChanged(String provider, int status, Bundle extras) {}
 
     private static class StationGroup extends Station {
-        public ArrayList<Station> stations = new ArrayList<Station>();
+        public final HashMap<String, Station> stations = new HashMap<String, Station>();
         public StationGroup(Station s) {
             super(s.id, s.position, s.network, s.address, s.level1Avail, s.level1Total, s.level2Avail, s.level2Total, s.level3Avail, s.level3Total);
-            stations.add(s);
+            stations.put(s.id, s);
         }
         public boolean add(Station station) {
             if (station.network == network) {
-                for (Station s : stations)
-                    if (s.id.equals(station.id))
-                        return true;
-                for (Station s : stations) {
-                    if (SphericalUtil.computeDistanceBetween(s.position, station.position) < 50) {
-                        stations.add(station);
+                if (stations.containsKey(station.id))
+                    return true;
+                for (Station s : stations.values()) {
+                    if (SphericalUtil.computeDistanceBetween(s.position, station.position) < 100) {
+                        stations.put(station.id, station);
                         level1Avail += station.level1Avail;
                         level1Total += station.level1Total;
                         level2Avail += station.level2Avail;
@@ -586,6 +587,12 @@ public class Home extends ActionBarActivity implements LocationListener {
                     }
                 }
             }
+            return false;
+        }
+        public boolean containsAny(Set<String> ids) {
+            for (String id : ids)
+                if (stations.containsKey(id))
+                    return true;
             return false;
         }
     }
