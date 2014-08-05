@@ -602,16 +602,11 @@ public class Home extends ActionBarActivity implements LocationListener {
     private static class Station {
         public static enum Status { ALL_LEVELS, SOME_LEVELS, NO_LEVELS, HIDDEN }
         public static BitmapDescriptor getIcon(Status status) {
-            float hue = BitmapDescriptorFactory.HUE_RED;
-            switch (status) {
-                case ALL_LEVELS:
-                    hue = BitmapDescriptorFactory.HUE_GREEN;
-                    break;
-                case SOME_LEVELS:
-                    hue = BitmapDescriptorFactory.HUE_YELLOW;
-                    break;
-            }
-            return BitmapDescriptorFactory.defaultMarker(hue);
+            return BitmapDescriptorFactory.fromResource(status == Status.ALL_LEVELS
+                ? R.drawable.pin_green
+                : status == Status.SOME_LEVELS
+                    ? R.drawable.pin_yellow
+                    : R.drawable.pin_red);
         }
         public final LatLng position;
         public final String id, address;

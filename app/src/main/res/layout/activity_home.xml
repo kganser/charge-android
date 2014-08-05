@@ -165,6 +165,36 @@
                 style="@style/DrawerOption"
                 android:id="@+id/option_favorites"
                 android:text="@string/favorites" />
+            <View style="@style/DrawerDivider" />
+            <LinearLayout
+                style="@style/DrawerItem"
+                android:gravity="center"
+                android:paddingBottom="0dp">
+                <ImageView
+                    style="@style/Pin"
+                    android:src="@drawable/pin_green" />
+                <TextView
+                    style="@style/DrawerText"
+                    android:text="@string/all" />
+                <ImageView
+                    style="@style/Pin"
+                    android:src="@drawable/pin_yellow" />
+                <TextView
+                    style="@style/DrawerText"
+                    android:text="@string/some" />
+                <ImageView
+                    style="@style/Pin"
+                    android:src="@drawable/pin_red" />
+                <TextView
+                    style="@style/DrawerText"
+                    android:text="@string/no" />
+            </LinearLayout>
+            <TextView
+                style="@style/DrawerItem"
+                android:gravity="center_horizontal"
+                android:paddingTop="0dp"
+                android:textColor="#ddd"
+                android:text="@string/availability" />
         </LinearLayout>
     </ScrollView>
 </android.support.v4.widget.DrawerLayout>

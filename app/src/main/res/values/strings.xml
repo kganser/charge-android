@@ -18,5 +18,9 @@
     <string name="level_2">Level 2 (240 V AC)</string>
     <string name="level_3">Level 3 (DC Fast)</string>
     <string name="none">none</string>
+    <string name="all">all</string>
+    <string name="some">some</string>
+    <string name="no">no</string>
+    <string name="availability">selected charging levels available</string>
 
 </resources>
