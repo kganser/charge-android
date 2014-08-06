@@ -114,7 +114,7 @@ public class Home extends ActionBarActivity implements LocationListener {
                 }
             }
             if (position.zoom > 7 && marker == null) {
-                HTTP.cancel("map");
+                HTTP.cancel(Home.this);
                 HTTP.get(Home.this.getApplicationContext(),
                     "https://na.chargepoint.com/dashboard/getChargeSpots?ne_lat="+bounds.northeast.latitude+"&ne_lng="+bounds.northeast.longitude+"&sw_lat="+bounds.southwest.latitude+"&sw_lng="+bounds.southwest.longitude,
                     new Response.Listener<JSONArray>() {
@@ -153,7 +153,7 @@ public class Home extends ActionBarActivity implements LocationListener {
                             }
                         }
                     }
-                ).setTag("map");
+                ).setTag(Home.this);
                 HTTP.get(Home.this.getApplicationContext(),
                     "http://www.blinknetwork.com/locator/locations?lat="+position.target.latitude+"&lng="+position.target.longitude+"&latd="+Math.abs(bounds.northeast.latitude - position.target.latitude)+"&lngd="+Math.abs(bounds.northeast.longitude - position.target.longitude)+"&mode=avail",
                     new Response.Listener<JSONArray>() {
@@ -202,7 +202,7 @@ public class Home extends ActionBarActivity implements LocationListener {
                             }
                         }
                     }
-                ).setTag("map");
+                ).setTag(Home.this);
             }
         }
 
@@ -309,6 +309,7 @@ public class Home extends ActionBarActivity implements LocationListener {
     @Override
     protected void onStop() {
         GoogleAnalytics.getInstance(this).reportActivityStop(this);
+        HTTP.cancel(this);
         super.onStop();
     }
 
