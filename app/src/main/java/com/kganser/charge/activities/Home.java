@@ -37,6 +37,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Response;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.analytics.GoogleAnalytics;
@@ -113,21 +114,17 @@ public class Home extends ActionBarActivity implements LocationListener {
                 }
             }
             if (position.zoom > 7 && marker == null) {
-                HTTP.get("https://na.chargepoint.com/dashboard/getChargeSpots",
-                    new HTTP.Query()
-                        .add("ne_lat", bounds.northeast.latitude)
-                        .add("ne_lng", bounds.northeast.longitude)
-                        .add("sw_lat", bounds.southwest.latitude)
-                        .add("sw_lng", bounds.southwest.longitude),
-                    new HTTP.Callback() {
+                HTTP.cancel("map");
+                HTTP.get(Home.this.getApplicationContext(),
+                    "https://na.chargepoint.com/dashboard/getChargeSpots?ne_lat="+bounds.northeast.latitude+"&ne_lng="+bounds.northeast.longitude+"&sw_lat="+bounds.southwest.latitude+"&sw_lng="+bounds.southwest.longitude,
+                    new Response.Listener<JSONArray>() {
                         @Override
-                        public void onResponse(HTTP.Response response) {
-                            if (response == null) return;
+                        public void onResponse(JSONArray response) {
                             try {
-                                JSONArray s = new JSONArray(response.toString()).getJSONObject(0).getJSONObject("station_list").getJSONArray("summaries");
+                                response = response.getJSONObject(0).getJSONObject("station_list").getJSONArray("summaries");
                                 JSONObject level;
-                                for (int i = 0; i < s.length(); i++) {
-                                    JSONObject data = s.getJSONObject(i);
+                                for (int i = 0; i < response.length(); i++) {
+                                    JSONObject data = response.getJSONObject(i);
                                     if (data.getString("station_status").equals("out_of_network"))
                                         continue;
                                     int level1Avail = 0, level1Total = 0, level2Avail = 0, level2Total = 0, level3Avail = 0, level3Total = 0;
@@ -156,22 +153,15 @@ public class Home extends ActionBarActivity implements LocationListener {
                             }
                         }
                     }
-                );
-                HTTP.get("http://www.blinknetwork.com/locator/locations",
-                    new HTTP.Query()
-                        .add("lat", position.target.latitude)
-                        .add("lng", position.target.longitude)
-                        .add("latd", Math.abs(bounds.northeast.latitude - position.target.latitude))
-                        .add("lngd", Math.abs(bounds.northeast.longitude - position.target.longitude))
-                        .add("mode", "avail"),
-                    new HTTP.Callback() {
+                ).setTag("map");
+                HTTP.get(Home.this.getApplicationContext(),
+                    "http://www.blinknetwork.com/locator/locations?lat="+position.target.latitude+"&lng="+position.target.longitude+"&latd="+Math.abs(bounds.northeast.latitude - position.target.latitude)+"&lngd="+Math.abs(bounds.northeast.longitude - position.target.longitude)+"&mode=avail",
+                    new Response.Listener<JSONArray>() {
                         @Override
-                        public void onResponse(HTTP.Response response) {
-                            if (response == null) return;
+                        public void onResponse(JSONArray response) {
                             try {
-                                JSONArray s = new JSONArray(response.toString());
-                                for (int i = 0; i < s.length(); i++) {
-                                    JSONObject data = s.getJSONObject(i);
+                                for (int i = 0; i < response.length(); i++) {
+                                    JSONObject data = response.getJSONObject(i);
                                     JSONObject chargers;
                                     Iterator keys;
                                     int level1Avail = 0, level1Total = 0, level2Avail = 0, level2Total = 0, level3Avail = 0, level3Total = 0;
@@ -212,7 +202,7 @@ public class Home extends ActionBarActivity implements LocationListener {
                             }
                         }
                     }
-                );
+                ).setTag("map");
             }
         }
 
