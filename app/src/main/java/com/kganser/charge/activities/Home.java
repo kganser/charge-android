@@ -122,26 +122,32 @@ public class Home extends ActionBarActivity implements LocationListener {
                         public void onResponse(JSONArray response) {
                             try {
                                 response = response.getJSONObject(0).getJSONObject("station_list").getJSONArray("summaries");
-                                JSONObject level;
+                                JSONObject level, free, paid;
                                 for (int i = 0; i < response.length(); i++) {
                                     JSONObject data = response.getJSONObject(i);
                                     if (data.getString("station_status").equals("out_of_network"))
                                         continue;
                                     int level1Avail = 0, level1Total = 0, level2Avail = 0, level2Total = 0, level3Avail = 0, level3Total = 0;
                                     try {
-                                        level = data.getJSONObject("map_data").getJSONObject("level1").getJSONObject("paid");
-                                        level1Avail = level.getInt("available");
-                                        level1Total = level.getInt("total");
+                                        level = data.getJSONObject("map_data").getJSONObject("level1");
+                                        free = level.optJSONObject("free");
+                                        paid = level.optJSONObject("paid");
+                                        level1Avail = (free == null ? 0 : free.getInt("available")) + (paid == null ? 0 : paid.getInt("available"));
+                                        level1Total = (free == null ? 0 : free.getInt("total")) + (paid == null ? 0 : paid.getInt("total"));
                                     } catch (JSONException e) {}
                                     try {
-                                        level = data.getJSONObject("map_data").getJSONObject("level2").getJSONObject("paid");
-                                        level2Avail = level.getInt("available");
-                                        level2Total = level.getInt("total");
+                                        level = data.getJSONObject("map_data").getJSONObject("level2");
+                                        free = level.optJSONObject("free");
+                                        paid = level.optJSONObject("paid");
+                                        level2Avail = (free == null ? 0 : free.getInt("available")) + (paid == null ? 0 : paid.getInt("available"));
+                                        level2Total = (free == null ? 0 : free.getInt("total")) + (paid == null ? 0 : paid.getInt("total"));
                                     } catch (JSONException e) {}
                                     try {
-                                        level = data.getJSONObject("map_data").getJSONObject("level3").getJSONObject("paid");
-                                        level3Avail = level.getInt("available");
-                                        level3Total = level.getInt("total");
+                                        level = data.getJSONObject("map_data").getJSONObject("level3");
+                                        free = level.optJSONObject("free");
+                                        paid = level.optJSONObject("paid");
+                                        level3Avail = (free == null ? 0 : free.getInt("available")) + (paid == null ? 0 : paid.getInt("available"));
+                                        level3Total = (free == null ? 0 : free.getInt("total")) + (paid == null ? 0 : paid.getInt("total"));
                                     } catch (JSONException e) {}
                                     addStation(new Station("chargepoint-" + data.getString("device_id"),
                                         new LatLng(data.getDouble("lat"), data.getDouble("lon")),
@@ -162,11 +168,11 @@ public class Home extends ActionBarActivity implements LocationListener {
                             try {
                                 for (int i = 0; i < response.length(); i++) {
                                     JSONObject data = response.getJSONObject(i);
-                                    JSONObject chargers;
+                                    JSONObject chargers, units = data.getJSONObject("units");
                                     Iterator keys;
                                     int level1Avail = 0, level1Total = 0, level2Avail = 0, level2Total = 0, level3Avail = 0, level3Total = 0;
                                     try {
-                                        chargers = data.getJSONObject("units").getJSONObject("1");
+                                        chargers = units.getJSONObject("1");
                                         keys = chargers.keys();
                                         while (keys.hasNext()) {
                                             if (chargers.getJSONObject((String) keys.next()).getString("state").equals("AVAIL"))
@@ -175,7 +181,7 @@ public class Home extends ActionBarActivity implements LocationListener {
                                         }
                                     } catch (JSONException e) {}
                                     try {
-                                        chargers = data.getJSONObject("units").getJSONObject("2");
+                                        chargers = units.getJSONObject("2");
                                         keys = chargers.keys();
                                         while (keys.hasNext()) {
                                             if (chargers.getJSONObject((String) keys.next()).getString("state").equals("AVAIL"))
@@ -184,7 +190,7 @@ public class Home extends ActionBarActivity implements LocationListener {
                                         }
                                     } catch (JSONException e) {}
                                     try {
-                                        chargers = data.getJSONObject("units").getJSONObject("DCFAST");
+                                        chargers = units.getJSONObject("DCFAST");
                                         keys = chargers.keys();
                                         while (keys.hasNext()) {
                                             if (chargers.getJSONObject((String) keys.next()).getString("state").equals("AVAIL"))
@@ -518,14 +524,13 @@ public class Home extends ActionBarActivity implements LocationListener {
     private Station.Status getStationStatus(StationGroup station) {
         boolean level1 = settings.getBoolean("option_level_1"),
             level2 = settings.getBoolean("option_level_2"),
-            level3 = settings.getBoolean("option_level_3"),
-            unavailable = settings.getBoolean("option_unavailable");
+            level3 = settings.getBoolean("option_level_3");
 
         // in a selected network and with any of the selected levels
         if ((level1 ? station.level1Total : 0) + (level2 ? station.level2Total : 0) + (level3 ? station.level3Total : 0) > 0
             && (station.network == R.string.chargepoint && settings.getBoolean("option_chargepoint")
             || station.network == R.string.blink && settings.getBoolean("option_blink"))
-            && (!settings.getBoolean("option_favorites") || favorites.contains(station.id))) {
+            && (!settings.getBoolean("option_favorites") || station.containsAny(favorites))) {
 
             boolean level1Avail = level1 && station.level1Avail > 0,
                 level2Avail = level2 && station.level2Avail > 0,
@@ -535,7 +540,7 @@ public class Home extends ActionBarActivity implements LocationListener {
                 ? (!level1 || level1Avail) && (!level2 || level2Avail) && (!level3 || level3Avail)
                     ? Station.Status.ALL_LEVELS : Station.Status.SOME_LEVELS
                 : Station.Status.NO_LEVELS;
-            return !unavailable && status == Station.Status.NO_LEVELS ? Station.Status.HIDDEN : status;
+            return !settings.getBoolean("option_unavailable") && status == Station.Status.NO_LEVELS ? Station.Status.HIDDEN : status;
         }
         return Station.Status.HIDDEN;
     }

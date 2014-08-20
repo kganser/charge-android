@@ -21,6 +21,6 @@
     <string name="all">all</string>
     <string name="some">some</string>
     <string name="no">no</string>
-    <string name="availability">selected charging levels available</string>
+    <string name="availability">selected levels available</string>
 
 </resources>
