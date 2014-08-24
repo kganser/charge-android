@@ -436,11 +436,11 @@ public class Home extends ActionBarActivity implements LocationListener {
         drawerToggle.syncState();
     }
 
-    @Override
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.home, menu);
         return true;
-    }
+    }*/
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {

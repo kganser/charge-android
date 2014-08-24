@@ -123,7 +123,7 @@
         android:layout_width="240dp"
         android:layout_height="match_parent"
         android:layout_gravity="left"
-        android:background="#111">
+        android:background="@color/background">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -193,7 +193,6 @@
                 style="@style/DrawerItem"
                 android:gravity="center_horizontal"
                 android:paddingTop="0dp"
-                android:textColor="#ddd"
                 android:text="@string/availability" />
         </LinearLayout>
     </ScrollView>

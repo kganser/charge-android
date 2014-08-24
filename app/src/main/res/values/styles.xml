@@ -4,8 +4,10 @@
         <item name="actionBarStyle">@style/ChargeTheme.ActionBar</item>
     </style>
     <style name="ChargeTheme.ActionBar" parent="Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">@color/background</item>
         <item name="android:displayOptions">useLogo|showHome|homeAsUp|showTitle</item>
         <item name="displayOptions">useLogo|showHome|homeAsUp|showTitle</item>
+        <item name="background">@color/background</item>
     </style>
     <style name="Pin">
         <item name="android:layout_width">13dp</item>
@@ -15,7 +17,7 @@
     <style name="DrawerText">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">#ddd</item>
+        <item name="android:textColor">@color/white</item>
         <item name="android:textSize">14sp</item>
         <item name="android:paddingLeft">5dp</item>
         <item name="android:paddingRight">5dp</item>
@@ -25,7 +27,6 @@
         <item name="android:paddingTop">10dp</item>
         <item name="android:paddingBottom">5dp</item>
         <item name="android:paddingLeft">10dp</item>
-        <item name="android:textColor">#fff</item>
     </style>
     <style name="DrawerOption" parent="DrawerText">
         <item name="android:layout_width">match_parent</item>
